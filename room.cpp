@@ -40,7 +40,7 @@ item* room::getItem(const char* itemName, vector<item*> &vect) {
   vector<item*>::iterator iter;
   for (iter = vect.begin(); iter < vect.end(); iter++) {
     if (strcmp(itemName, (*iter)->getName()) == 0) {
-      cout << "Player has acquired \e[33m" << (*iter)->getName() << "\e[0m" << endl;
+      cout << "Player has acquired \e[34m" << (*iter)->getName() << "\e[0m" << endl;
       vect.erase(iter);
       return *iter;
     }
