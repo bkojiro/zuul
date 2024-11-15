@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include "room.h"
+#include "item.h"
 
 using namespace std;
 
@@ -32,6 +33,17 @@ int main() {
   R5->setExit('n', S6, R5->exits); R5->setExit('e', S4, R5->exits); R5->setExit('s', R2, R5->exits); R5->setExit('w', S3, R5->exits);
   R6->setExit('n', S7, R6->exits); R6->setExit('e', R7, R6->exits); R6->setExit('s', R4, R6->exits); R6->setExit('w', S4, R6->exits);
   R7->setExit('n', S8, R7->exits); R7->setExit('e', S5, R7->exits); R7->setExit('s', S2, R7->exits); R7->setExit('w', R6, R7->exits);
+  S1->setExit('e', R2, S1->exits);
+  S2->setExit('n', R7, S2->exits);
+  S3->setExit('e', R5, S3->exits);
+  S4->setExit('e', R6, S4->exits); S4->setExit('w', R5, S4->exits);
+  S5->setExit('w', R7, S5->exits);
+  S6->setExit('s', R5, S6->exits);
+  S7->setExit('s', R6, S7->exits);
+  S8->setExit('s', R7, S8->exits);
+
+  //all items
+  S1->addItem(new item("\e[31mFLOUR\e[0m"), S1->items);
    
   //room* Room = new room("Room");
   //Room->addItem(new item("sword"), Room->itemVect);

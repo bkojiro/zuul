@@ -1,0 +1,72 @@
+#include <iostream>
+#include <cstring>
+#include "room.h"
+#include "item.h"
+
+using namespace std;
+
+room::room(const char* name) {
+  roomName = new char[40];
+  strcpy(roomName, name);
+}
+
+char* room::getName() {
+  return roomName;
+}
+
+void room::setExit(char dir, room* Room, map<char, room*> &mp) {
+  if (dir == 'n') { //set north room
+    mp['n'] = Room;
+  } else if (dir == 'e') { //set north room
+    mp['e'] = Room;
+  } else if (dir == 's') { //set south room
+    mp['s'] = Room;
+  } else if (dir == 'w') { //set west room
+    mp['w'] = Room;
+  }
+}
+
+room* room::getExit(char dir, map<char[], room*> mp) {
+  if (dir == "NORTH") { //get north room
+    return mp.;
+  } else if (dir == "EAST") { //get north room
+    return EAST_ROOM;
+  } else if (dir == 's') { //get south room
+    return SOUTH_ROOM;
+  } else if (dir == 'w') { //get west room
+    return WEST_ROOM;
+  }
+  return NULL;
+}
+
+void room::seeExits(map<char, room*> mp) {
+  cout << "The exits of this room are:" << endl;
+  map<char, room*>::iterator iter;
+  for (iter = mp.begin(); iter < mp.end(); iter++) {
+    if (iter->first == 'n') {
+      cout << "NORTH: " << iter->second->getName();
+    } else if (iter->first == 'e') {
+      cout << "EAST: " << iter->second->getName();
+    } else if (iter->first == 's') {
+      cout << "SOUTH: " << iter->second->getName();
+    } else if (iter->first == 'w') {
+      cout << "WEST: " << iter->second->getName();
+    }
+  }
+}
+
+void room::addItem(item* Item, vector<item*> &vect) {
+  vect.push_back(Item);
+}
+
+item* room::getItem(const char* itemName, vector<item*> &vect) {
+  vector<item*>::iterator iter;
+  for (iter = vect.begin(); iter < vect.end(); iter++) {
+    if (strcmp(itemName, (*iter)->getName()) == 0) {
+      cout << "Player has acquired \e[33m" << (*iter)->getName() << "\e[0m" << endl;
+      vect.erase(iter);
+      return *iter;
+    }
+  }
+  return NULL;
+}

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
 #include <map>
 #include "room.h"
 #include "item.h"
