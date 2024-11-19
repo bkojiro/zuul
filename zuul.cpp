@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <map>
 #include "room.h"
 #include "item.h"
 
@@ -7,6 +8,8 @@ using namespace std;
 
 void RECIPE(vector<const char*> vect, vector<item*> inv, char* recipe);
 void INFO(char* name, char* recipe);
+void GO(room* &currentRoom);
+void GET(room* &currentRoom, vector<item*> &inv);
 
 int main() {
   //all "rooms"
@@ -30,7 +33,7 @@ int main() {
   //all exits
   HOME->setExit('w', R1, HOME->exits);
   R1->setExit('n', R3, R1->exits); R1->setExit('e', HOME, R1->exits);
-  R2->setExit('n', R4, R2->exits); R2->setExit('e', R3, R2->exits); R2->setExit('w', S1, R2->exits);
+  R2->setExit('n', R5, R2->exits); R2->setExit('e', R3, R2->exits); R2->setExit('w', S1, R2->exits);
   R3->setExit('e', R4, R3->exits); R3->setExit('w', R2, R3->exits);
   R4->setExit('n', R6, R4->exits); R4->setExit('w', R3, R4->exits);
   R5->setExit('n', S6, R5->exits); R5->setExit('e', S4, R5->exits); R5->setExit('s', R2, R5->exits); R5->setExit('w', S3, R5->exits);
@@ -79,34 +82,82 @@ int main() {
     char input[20];
     cin.get(input, 21);
     cin.get();
-    if (strcmp(input, "RECIPE") == 0) {
+    if (strcmp(input, "RECIPE") == 0) { //DAY 1
       //look at needed ingredients
       if (day == 1) {
-	RECIPE(appleStrudel, inv, currentRecipe);
+        RECIPE(appleStrudel, inv, currentRecipe);
       } else if (day == 2) {
-        RECIPE(peachCobbler, inv, currentRecipe);
+	RECIPE(peachCobbler, inv, currentRecipe);
       } else if (day == 3) {
-        RECIPE(zucchiniBread, inv, currentRecipe);
+	RECIPE(zucchiniBread, inv, currentRecipe);
       } else if (day == 4) {
-        RECIPE(carrotCake, inv, currentRecipe);
+	RECIPE(carrotCake, inv, currentRecipe);
       } else if (day == 5) {
-        RECIPE(spicedChocCookies, inv, currentRecipe);
+	RECIPE(spicedChocCookies, inv, currentRecipe);
       }
     } else if (strcmp(input, "GO") == 0) {
       //list options, ask for direction
-      cout << "Where would you like to go?" << endl;
-      //NOTE TO SELF: MAKE ITERATOR, THEN ASK FOR CARDINAL DIR
+      GO(currentRoom);
+    } else if (strcmp(input, "GET") == 0) {
+      //if there are items in the room, ask which one then grab it!
+      GET(currentRoom, inv);
     } else if (strcmp(input, "SEARCH") == 0) {
       //current room, nearby rooms
+      cout << "You are in " << currentRoom->getName() << " at " << currentRoom->getStreet() << ". The nearby destinations are:" << endl;
+      currentRoom->seeExits(currentRoom->exits);
+      cout << "> ";
     } else if (strcmp(input, "INFO") == 0) {
       INFO(playerName, currentRecipe);
+    } else {
+      cout << "Invalid command. Check capitalization and spelling" << endl << "> ";
     }
   }   
 }
 
-//void GO() {
+void GO(room* &currentRoom) {
+  cout << "Where would you like to go? Enter the letter preceding the destination" << endl;
+  currentRoom->seeExits(currentRoom->exits); //allow user to see all directions and exits
+  cout << "> ";
+  char dir;
+  cin >> dir;
+  cin.ignore();
+  int count = currentRoom->exits.size();
+  map<char, room*>::iterator iter;
+  for (iter = currentRoom->exits.begin(); iter != currentRoom->exits.end(); ++iter) {
+    if (dir == iter->first) {
+     currentRoom = iter->second; //change current room to new room
+     cout << "You are now in \e[33m" << iter->second->getName() << "\e[0m, at \e[32m" << iter->second->getStreet() << "\e[0m" << endl;
+     if (currentRoom->items.size() != 0) {
+       cout << "The items here are:" << endl;
+       currentRoom->seeItems(currentRoom->items);
+     }
+     cout << "> ";
+     return;
+    } else count--;
+  }
+  //if direction is not valid, print
+  if (count == 0) cout << "Not a valid direction. Check your spelling and if the direction has a destination associated with it" << endl << "> ";
+  return;
+}
 
-//}
+void GET(room* &currentRoom, vector<item*> &inv) {
+  if (currentRoom->items.size() == 0) {
+    cout << "No items at this destination to grab" << endl << "> ";
+    return;
+  } else {
+    cout << "What would you like to get?" << endl << "> ";
+    char getItem[20];
+    cin.get(getItem, 21);
+    cin.get();
+    vector<item*>::iterator i;
+    for (i = currentRoom->items.begin(); i < currentRoom->items.end(); i++) {
+      if (strcmp((*i)->getName(), getItem) == 0) {
+	inv.push_back(currentRoom->getItem(getItem, currentRoom->items));
+	return;
+      }
+    }
+  }
+}
 
 void RECIPE(vector<const char*> vect, vector<item*> inv, char* recipe) {
   cout << "Recipe: \e[33m" << recipe << "\e[0m" << endl;
@@ -115,7 +166,7 @@ void RECIPE(vector<const char*> vect, vector<item*> inv, char* recipe) {
     cout << "- " << (*iter);
     vector<item*>::iterator i;
     for (i = inv.begin(); i < inv.end(); i++) {
-      if (strcmp((*iter), (*i)->getName()) == 0) cout << " \e[33m(obtained)\e[0m";
+      if (strcmp((*iter), (*i)->getName()) == 0) cout << " \e[33m(obtained)\e[0m"; //smth here isnt working. . .
     }
     cout << endl;
   }

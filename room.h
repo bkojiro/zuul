@@ -17,8 +17,11 @@ class room {
   vector<item*> items;
 
   char* getName();
+  char* getStreet();
   void setExit(char dir, room* Room, map<char, room*> &mp);
   room* getExit(char dir, map<char, room*> mp);
+  void seeExits(map<char, room*> mp);
+  void seeItems(vector<item*> items);
   void addItem(item* Item, vector<item*> &vect);
   item* getItem(const char* itemName, vector<item*> &vect);
 };
