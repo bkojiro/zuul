@@ -55,13 +55,14 @@ void room::addItem(item* Item, vector<item*> &vect) {
 }
 
 item* room::getItem(const char* itemName, vector<item*> &vect) {
+  item* tempItem;
   vector<item*>::iterator iter;
   for (iter = vect.begin(); iter < vect.end(); iter++) {
     if (strcmp(itemName, (*iter)->getName()) == 0) {
       cout << "Player has acquired \e[34m" << (*iter)->getName() << "\e[0m" << endl;
+      tempItem = (*iter);
       vect.erase(iter);
-      return *iter;
     }
   }
-  return NULL;
+  return tempItem;
 }
